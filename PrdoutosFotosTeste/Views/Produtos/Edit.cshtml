@@ -12,34 +12,17 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ProdutoId" />
+            <input type="hidden" asp-for="Id" />
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="Estado" /> @Html.DisplayNameFor(model => model.Estado)
                 </label>
             </div>
-
-
-            @Html.LabelFor(model => model.ProdutoFotos)
-            @for (int i = 0; i < Model.ProdutoFotos.Count(); i++)
-            {
-                <input type="hidden" asp-for="@Model.ProdutoFotos[@i].ProdutoFotosId" />
-
-                <div class="form-group">
-                    <label asp-for="@Model.ProdutoFotos[@i].ProdutoId" class="control-label"></label>
-                    <input asp-for="@Model.ProdutoFotos[@i].ProdutoId" class="form-control" />
-                    <span asp-validation-for="@Model.ProdutoFotos[@i].ProdutoId" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="@Model.ProdutoFotos[@i].FotoPath" class="control-label"></label>
-                    <input asp-for="@Model.ProdutoFotos[@i].FotoPath" class="form-control" />
-                    <span asp-validation-for="@Model.ProdutoFotos[@i].FotoPath" class="text-danger"></span>
-                </div>
-            }
-
-
-
+            <div class="form-group">
+                <label asp-for="ProdutoFotosId" class="control-label"></label>
+                <input asp-for="ProdutoFotosId" class="form-control" />
+                <span asp-validation-for="ProdutoFotosId" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

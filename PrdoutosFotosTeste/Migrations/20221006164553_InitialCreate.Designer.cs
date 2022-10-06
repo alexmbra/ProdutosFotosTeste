@@ -11,7 +11,7 @@ using ProdutosFotosTeste.Context;
 namespace ProdutosFotosTeste.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20221006144002_InitialCreate")]
+    [Migration("20221006164553_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,16 +25,19 @@ namespace ProdutosFotosTeste.Migrations
 
             modelBuilder.Entity("ProdutosFotosTeste.Models.Produto", b =>
                 {
-                    b.Property<int>("ProdutoId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProdutoId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<bool>("Estado")
                         .HasColumnType("bit");
 
-                    b.HasKey("ProdutoId");
+                    b.Property<int>("ProdutoFotosId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
 
                     b.ToTable("Produtos");
                 });

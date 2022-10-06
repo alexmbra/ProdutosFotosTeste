@@ -18,24 +18,33 @@
                 </label>
             </div>
 
-           
-            <div>
-                @Html.LabelFor(model => model.ProdutoFotos)
-
-    
-               @*
-                @Html.LabelFor(model => model.ProdutoFotos[0].ProdutoFotosId)
-                <input type="hidden" name="ProdutoFotosId" asp-for="@Model.ProdutoFotos[0].ProdutoFotosId" />
-                @Html.LabelFor(model => model.ProdutoFotos[0].ProdutoId)
-                <input type="hidden" name="ProdutoId" asp-for="@Model.ProdutoFotos[0].ProdutoId" />
-                *@
-
-                @Html.LabelFor(model => model.ProdutoFotos[0].FotoPath)
-                    
-                <input type="file" name="FotoPath" asp-for="@Model.ProdutoFotos[0].FotoPath" />
+            <div class="form-group">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Foto Path
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @*@foreach (var item in Model.ProdutoFotos)*@
+                        @for (int i = 0; i < Model.ProdutoFotos.Count; i++)
+                        {
+                            <tr>
+                                <td>
+                                    @*<input asp-for="@item.FotoPath" class="form-control" />*@
+                                    @Html.EditorFor(x => x.ProdutoFotos[i].FotoPath,
+                                        new {htmlAttributes = new{@class="form-control"}})
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
 
 
             </div>
+
 
 
 

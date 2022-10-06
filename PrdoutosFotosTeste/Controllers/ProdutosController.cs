@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProdutosFotosTeste.Context;
 using ProdutosFotosTeste.Models;
@@ -13,16 +8,18 @@ namespace ProdutosFotosTeste.Controllers
     public class ProdutosController : Controller
     {
         private readonly ApplicationDBContext _context;
+        private readonly IWebHostEnvironment _webHost;
 
-        public ProdutosController(ApplicationDBContext context)
+        public ProdutosController(ApplicationDBContext context, IWebHostEnvironment webHost)
         {
             _context = context;
+            _webHost = webHost;
         }
 
         // GET: Produtos
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Produtos.ToListAsync());
+            return View(await _context.Produtos.ToListAsync());
         }
 
         // GET: Produtos/Details/5
@@ -34,7 +31,7 @@ namespace ProdutosFotosTeste.Controllers
             }
 
             var produto = await _context.Produtos
-                .FirstOrDefaultAsync(m => m.ProdutoId == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (produto == null)
             {
                 return NotFound();
@@ -46,16 +43,8 @@ namespace ProdutosFotosTeste.Controllers
         // GET: Produtos/Create
         public IActionResult Create()
         {
-            ProdutoFotos pFoto = new ProdutoFotos();
-            pFoto.FotoPath = "teste.jpg";
-
-            List<ProdutoFotos> listPhotos = new List<ProdutoFotos>();          
-            listPhotos.Add(pFoto);
-
             Produto produto = new Produto();
-            produto.Estado = true;
-            produto.ProdutoFotos = listPhotos;
-
+            produto.ProdutoFotos.Add(new ProdutoFotos() { ProdutoFotosId = 1 });
 
             return View(produto);
         }
@@ -65,17 +54,35 @@ namespace ProdutosFotosTeste.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Produto produto)
+        public async Task<IActionResult> Create([Bind("Id,Estado,ProdutoFotosId,ProdutoFotos")] Produto produto)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(produto);
+                if (ModelState.IsValid)
+                {
+                    foreach (ProdutoFotos produtoFotos in produto.ProdutoFotos)
+                    {
+                        if (produtoFotos.FotoPath == null || produtoFotos.FotoPath.Length == 0)
+                        {
+                            produto.ProdutoFotos.Remove(produtoFotos);
+                        }
+                    }
 
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                    _context.Add(produto);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists " +
+                    "see your system administrator.");
             }
             return View(produto);
         }
+
 
         // GET: Produtos/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -85,10 +92,7 @@ namespace ProdutosFotosTeste.Controllers
                 return NotFound();
             }
 
-            var produto = await _context.Produtos
-                .Include(pf => pf.ProdutoFotos)
-                .FirstOrDefaultAsync(p => p.ProdutoId == id);
-
+            var produto = await _context.Produtos.FindAsync(id);
             if (produto == null)
             {
                 return NotFound();
@@ -101,14 +105,9 @@ namespace ProdutosFotosTeste.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProdutoId,Estado")] Produto produto)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Estado,ProdutoFotosId")] Produto produto)
         {
-            if (produto.ProdutoFotos == null)
-            {
-                return BadRequest();
-            }
-
-            if (id != produto.ProdutoId)
+            if (id != produto.Id)
             {
                 return NotFound();
             }
@@ -122,7 +121,7 @@ namespace ProdutosFotosTeste.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProdutoExists(produto.ProdutoId))
+                    if (!ProdutoExists(produto.Id))
                     {
                         return NotFound();
                     }
@@ -145,7 +144,7 @@ namespace ProdutosFotosTeste.Controllers
             }
 
             var produto = await _context.Produtos
-                .FirstOrDefaultAsync(m => m.ProdutoId == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (produto == null)
             {
                 return NotFound();
@@ -168,14 +167,14 @@ namespace ProdutosFotosTeste.Controllers
             {
                 _context.Produtos.Remove(produto);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ProdutoExists(int id)
         {
-          return _context.Produtos.Any(e => e.ProdutoId == id);
+            return _context.Produtos.Any(e => e.Id == id);
         }
     }
 }

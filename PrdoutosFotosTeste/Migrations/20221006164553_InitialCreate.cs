@@ -12,13 +12,14 @@ namespace ProdutosFotosTeste.Migrations
                 name: "Produtos",
                 columns: table => new
                 {
-                    ProdutoId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Estado = table.Column<bool>(type: "bit", nullable: false)
+                    Estado = table.Column<bool>(type: "bit", nullable: false),
+                    ProdutoFotosId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Produtos", x => x.ProdutoId);
+                    table.PrimaryKey("PK_Produtos", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -27,8 +28,8 @@ namespace ProdutosFotosTeste.Migrations
                 {
                     ProdutoFotosId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FotoPath = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ProdutoId = table.Column<int>(type: "int", nullable: false)
+                    ProdutoId = table.Column<int>(type: "int", nullable: false),
+                    FotoPath = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -37,7 +38,7 @@ namespace ProdutosFotosTeste.Migrations
                         name: "FK_ProdutoFotos_Produtos_ProdutoId",
                         column: x => x.ProdutoId,
                         principalTable: "Produtos",
-                        principalColumn: "ProdutoId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
