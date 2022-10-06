@@ -1,0 +1,52 @@
+﻿@model ProdutosFotosTeste.Models.Produto
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Produto</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Estado" /> @Html.DisplayNameFor(model => model.Estado)
+                </label>
+            </div>
+
+           
+            <div>
+                @Html.LabelFor(model => model.ProdutoFotos)
+
+    
+               @*
+                @Html.LabelFor(model => model.ProdutoFotos[0].ProdutoFotosId)
+                <input type="hidden" name="ProdutoFotosId" asp-for="@Model.ProdutoFotos[0].ProdutoFotosId" />
+                @Html.LabelFor(model => model.ProdutoFotos[0].ProdutoId)
+                <input type="hidden" name="ProdutoId" asp-for="@Model.ProdutoFotos[0].ProdutoId" />
+                *@
+
+                @Html.LabelFor(model => model.ProdutoFotos[0].FotoPath)
+                    
+                <input type="file" name="FotoPath" asp-for="@Model.ProdutoFotos[0].FotoPath" />
+
+
+            </div>
+
+
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
